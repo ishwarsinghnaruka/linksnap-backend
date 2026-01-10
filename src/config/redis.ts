@@ -3,12 +3,17 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const redisClient = createClient({
-  socket: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: parseInt(process.env.REDIS_PORT || "6379"),
-  },
-});
+// Render/Railway provides REDIS_URL
+const redisUrl = process.env.REDIS_URL;
+
+const redisClient = redisUrl
+  ? createClient({ url: redisUrl })
+  : createClient({
+      socket: {
+        host: process.env.REDIS_HOST || "localhost",
+        port: parseInt(process.env.REDIS_PORT || "6379"),
+      },
+    });
 
 redisClient.on("connect", () => {
   console.log("✅ Redis connected successfully");
